@@ -35,3 +35,8 @@ minio123
 ```bash
     docker compose up -d
 ```
+7) ссылки
+
+   http://localhost:3000/ - front
+   http://localhost:9001/ - minio
+   http://localhost:9080/docs - swagger
