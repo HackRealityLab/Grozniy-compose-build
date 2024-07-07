@@ -1,0 +1,4 @@
+Flask==2.3.3
+tqdm==4.66.4
+ultralytics==8.2.16
+lapx>=0.5.2

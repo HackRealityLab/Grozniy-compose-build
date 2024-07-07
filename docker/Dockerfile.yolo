@@ -1,0 +1,30 @@
+FROM nvidia/cuda:12.5.0-devel-ubuntu22.04 as cuda
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBITECODE=1 \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    PYSETUP_PATH="/opt/project"\
+    VIDEO_RESULT_PATH="/opt/project/data/result_video"\
+    WEIGHTS_PATH="./yolo/yolov8n.pt"
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+    curl \
+    ffmpeg \ 
+    libsm6 \ 
+    libxext6 \
+    # python3-pip \
+    python3.10-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR $PYSETUP_PATH
+
+COPY /requirements.txt ./
+COPY /yolo ./yolo
+RUN python3 -m venv .env
+RUN .env/bin/pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+RUN .env/bin/pip install -r requirements.txt
+
+CMD .env/bin/python -m flask --app yolo.tracking run --host=0.0.0.0 --port 8080 
